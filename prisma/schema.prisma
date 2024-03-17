@@ -12,3 +12,35 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  email      String  @unique
+  password   String
+  resetToken String? @map("reset_token")
+  // userType   String? @default("personal") @map("user_type")
+  // isAdmin    Boolean @default(false) @map("is_admin")
+
+  // // personal info
+  // firstName   String?   @map("first_name")
+  // lastName    String?   @map("last_name")
+  // contactType String?   @map("contact_type")
+  // countryCode String?   @map("country_code")
+  // phoneNumber String?   @map("phone_number")
+  // position    String?   @map("position")
+  // dateOfBirth DateTime? @map("date_of_birth")
+  // gender      String?
+  // title       String?
+
+  // address1   String? @map("address1")
+  // address2   String? @map("address2")
+  // city       String? @map("city")
+  // state      String? @map("state")
+  // postalCode String? @map("postal_code")
+  // country    String? @map("country")
+
+  @@map("users")
+}
