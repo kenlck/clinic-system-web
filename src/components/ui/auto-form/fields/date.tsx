@@ -1,8 +1,8 @@
-import { DatePicker } from "@/components/ui/date-picker";
 import { FormControl, FormItem, FormMessage } from "@/components/ui/form";
 import AutoFormLabel from "../common/label";
 import AutoFormTooltip from "../common/tooltip";
-import { AutoFormInputComponentProps } from "../types";
+import type { AutoFormInputComponentProps } from "../types";
+import { DatePicker } from "../../date-picker";
 
 export default function AutoFormDate({
   label,
@@ -15,11 +15,7 @@ export default function AutoFormDate({
     <FormItem>
       <AutoFormLabel label={label} isRequired={isRequired} />
       <FormControl>
-        <DatePicker
-          date={field.value}
-          setDate={field.onChange}
-          {...fieldProps}
-        />
+        <DatePicker date={field.value} setDate={field.onChange} {...fieldProps} />
       </FormControl>
       <AutoFormTooltip fieldConfigItem={fieldConfigItem} />
 
