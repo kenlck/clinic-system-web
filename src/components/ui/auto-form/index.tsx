@@ -1,30 +1,28 @@
 "use client";
 import { Form } from "@/components/ui/form";
-import React from "react";
-import { DefaultValues, useForm } from "react-hook-form";
-import { z } from "zod";
+import { useEffect } from "react";
+import { type DefaultValues, useForm } from "react-hook-form";
+import type { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import AutoFormObject from "./fields/object";
-import { Dependency, FieldConfig } from "./types";
-import {
-  ZodObjectOrWrapped,
-  getDefaultValues,
-  getObjectFormSchema,
-} from "./utils";
+import type { Dependency, FieldConfig } from "./types";
+import { type ZodObjectOrWrapped, getDefaultValues, getObjectFormSchema } from "./utils";
 
 export function AutoFormSubmit({
   children,
   className,
+  disabled,
 }: {
   children?: React.ReactNode;
   className?: string;
+  disabled?: boolean;
 }) {
   return (
-    <Button type="submit" className={className}>
+    <Button type="submit" className={className} disabled={disabled}>
       {children ?? "Submit"}
     </Button>
   );
@@ -52,8 +50,10 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   dependencies?: Dependency<z.infer<SchemaType>>[];
 }) {
   const objectFormSchema = getObjectFormSchema(formSchema);
-  const defaultValues: DefaultValues<z.infer<typeof objectFormSchema>> | null =
-    getDefaultValues(objectFormSchema, fieldConfig);
+  const defaultValues: DefaultValues<z.infer<typeof objectFormSchema>> | null = getDefaultValues(
+    objectFormSchema,
+    fieldConfig
+  );
 
   const form = useForm<z.infer<typeof objectFormSchema>>({
     resolver: zodResolver(formSchema),
@@ -72,12 +72,14 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   // valuesString is needed because form.watch() returns a new object every time
   const valuesString = JSON.stringify(values);
 
-  React.useEffect(() => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
     onValuesChangeProp?.(values);
     const parsedValues = formSchema.safeParse(values);
     if (parsedValues.success) {
       onParsedValuesChange?.(parsedValues.data);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valuesString]);
 
   return (
@@ -89,12 +91,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
           }}
           className={cn("space-y-5", className)}
         >
-          <AutoFormObject
-            schema={objectFormSchema}
-            form={form}
-            dependencies={dependencies}
-            fieldConfig={fieldConfig}
-          />
+          <AutoFormObject schema={objectFormSchema} form={form} dependencies={dependencies} fieldConfig={fieldConfig} />
 
           {children}
         </form>

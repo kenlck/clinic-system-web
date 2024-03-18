@@ -44,3 +44,64 @@ model User {
 
   @@map("users")
 }
+
+model Patient {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // personal info
+  name      String?   @map("name")
+  contactNo String?   @map("contact_no")
+  email     String?   @map("email")
+  gender    Gender?
+  dob       DateTime?
+
+  address1   String? @map("address1")
+  address2   String? @map("address2")
+  city       String? @map("city")
+  state      String? @map("state")
+  postalCode String? @map("postal_code")
+  country    String? @map("country")
+
+  visits    PatientVisit[]
+  allergies PatientAllergy[]
+
+  @@map("patients")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHERS
+}
+
+model PatientVisit {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  visitDate DateTime @default(now()) @map("visit_date")
+  note      String?
+  diagnosis String?
+
+  patientId Int     @map("patient_id")
+  patient   Patient @relation(fields: [patientId], references: [id])
+
+  @@map("patient_visits")
+}
+
+model PatientAllergy {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  refCode     String? @map("ref_code")
+  allergyName String  @map("allergy_name")
+  note        String?
+
+  patientId Int     @map("patient_id")
+  patient   Patient @relation(fields: [patientId], references: [id])
+
+  @@map("patient_allergies")
+}

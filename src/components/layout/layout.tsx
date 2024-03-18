@@ -8,7 +8,7 @@ export function Layout(props: { children: React.ReactNode }) {
       <Header />
       <div className="flex h-screen overflow-hidden">
         <Sidebar />
-        <ScrollArea className="w-full h-full pt-14 px-4">{props.children}</ScrollArea>
+        <ScrollArea className="w-full h-[100vw-3.5rem] pt-14 px-4">{props.children}</ScrollArea>
       </div>
     </>
   );
