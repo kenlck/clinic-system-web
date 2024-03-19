@@ -1,8 +1,5 @@
-import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
-import { Button } from "@/components/ui/button";
-import { z } from "zod";
-import { PatientForm } from "../../form";
 import { prisma } from "@/lib/db.server";
+import { PatientForm } from "../../form";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const patient = await prisma.patient.findUnique({
