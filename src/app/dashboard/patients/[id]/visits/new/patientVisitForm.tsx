@@ -10,12 +10,12 @@ import { useRouter } from "next/navigation";
 import type { PatientVisit } from "@prisma/client";
 import { LoaderIcon } from "lucide-react";
 
-export function PatientVisitForm({ patientId, visit }: { patientId: string; visit: PatientVisit }) {
+export function PatientVisitForm({ patientId, visit }: { patientId: string; visit?: PatientVisit }) {
   const router = useRouter();
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: { patientVisit: PatientVisitType; patientId: string }) => {
-      if (visit.id) {
-        return editPatientVisit(visit.id.toString(), data.patientVisit);
+      if (visit?.id) {
+        return editPatientVisit(visit?.id.toString(), data.patientVisit);
       }
       return createPatientVisit(data.patientId, data.patientVisit);
     },
@@ -45,8 +45,8 @@ export function PatientVisitForm({ patientId, visit }: { patientId: string; visi
         mutate(data);
       }}
     >
-      <Textarea label="Note" name="note" rows={4} defaultValue={visit.note ?? ""} />
-      <Textarea label="Diagnosis" name="diagnosis" rows={4} defaultValue={visit.diagnosis ?? ""} />
+      <Textarea label="Note" name="note" rows={4} defaultValue={visit?.note ?? ""} />
+      <Textarea label="Diagnosis" name="diagnosis" rows={4} defaultValue={visit?.diagnosis ?? ""} />
 
       <Button type="submit" disabled={isPending}>
         {isPending ? <LoaderIcon className="size-5 animate-spin" /> : "Save"}
