@@ -76,6 +76,18 @@ enum Gender {
   OTHERS
 }
 
+model Referral {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // personal info
+  name         String?        @map("name")
+  contactNo    String?        @map("contact_no")
+  email        String?        @unique @map("email")
+  patientVisit PatientVisit[]
+}
+
 model PatientVisit {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
@@ -84,6 +96,9 @@ model PatientVisit {
   visitDate DateTime @default(now()) @map("visit_date")
   note      String?
   diagnosis String?
+
+  referralId Int?      @map("referral_id")
+  referral   Referral? @relation(fields: [referralId], references: [id])
 
   patientId Int     @map("patient_id")
   patient   Patient @relation(fields: [patientId], references: [id])
