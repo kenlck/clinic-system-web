@@ -7,6 +7,7 @@ import { Suspense, useEffect, useState } from "react";
 import { PatientVisits } from "./patientVisits";
 import { useSearchParams } from "next/navigation";
 import { PatientAllergies } from "./patientAllergies";
+import { PatientInvoices } from "./patientInvoices";
 
 export function PatientTab({ patientId }: { patientId: string }) {
   const sp = useSearchParams();
@@ -14,7 +15,7 @@ export function PatientTab({ patientId }: { patientId: string }) {
   const [value, setValue] = useState("history");
 
   useEffect(() => {
-    if (searchParams.tab === "allergy" || searchParams.tab === "history") {
+    if (searchParams.tab === "allergy" || searchParams.tab === "history" || searchParams.tab === "invoice") {
       setValue(searchParams.tab);
     }
   }, [searchParams.tab]);
@@ -31,6 +32,7 @@ export function PatientTab({ patientId }: { patientId: string }) {
         <TabsList>
           <TabsTrigger value="history">Visit History</TabsTrigger>
           <TabsTrigger value="allergy">Allergies</TabsTrigger>
+          <TabsTrigger value="invoice">Invoices</TabsTrigger>
         </TabsList>
         {value === "history" && (
           <Link href={`/dashboard/patients/${patientId}/visits/new`}>
@@ -42,6 +44,11 @@ export function PatientTab({ patientId }: { patientId: string }) {
             <Button size="sm">New Allergy</Button>
           </Link>
         )}
+        {value === "invoice" && (
+          <Link href={`/dashboard/patients/${patientId}/invoices/new`}>
+            <Button size="sm">New Invoice</Button>
+          </Link>
+        )}
       </div>
       <TabsContent value="history">
         <Suspense>
@@ -51,6 +58,11 @@ export function PatientTab({ patientId }: { patientId: string }) {
       <TabsContent value="allergy">
         <Suspense>
           <PatientAllergies patientId={patientId} />
+        </Suspense>
+      </TabsContent>
+      <TabsContent value="invoice">
+        <Suspense>
+          <PatientInvoices patientId={patientId} />
         </Suspense>
       </TabsContent>
     </Tabs>

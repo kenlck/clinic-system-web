@@ -66,6 +66,7 @@ model Patient {
 
   visits    PatientVisit[]
   allergies PatientAllergy[]
+  invoices  Invoice[]
 
   @@map("patients")
 }
@@ -86,6 +87,8 @@ model Referral {
   contactNo    String?        @map("contact_no")
   email        String?        @unique @map("email")
   patientVisit PatientVisit[]
+
+  @@map("referrals")
 }
 
 model PatientVisit {
@@ -100,8 +103,9 @@ model PatientVisit {
   referralId Int?      @map("referral_id")
   referral   Referral? @relation(fields: [referralId], references: [id])
 
-  patientId Int     @map("patient_id")
-  patient   Patient @relation(fields: [patientId], references: [id])
+  patientId Int       @map("patient_id")
+  patient   Patient   @relation(fields: [patientId], references: [id])
+  invoices  Invoice[]
 
   @@map("patient_visits")
 }
@@ -119,4 +123,39 @@ model PatientAllergy {
   patient   Patient @relation(fields: [patientId], references: [id])
 
   @@map("patient_allergies")
+}
+
+model Invoice {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  invoiceId   String?  @map("invoice_id")
+  amount      Int
+  description String?
+  status      String?
+
+  patientVisitId Int?          @map("patient_visit_id")
+  patientVisit   PatientVisit? @relation(fields: [patientVisitId], references: [id])
+
+  patientId Int           @map("patient_id")
+  patient   Patient       @relation(fields: [patientId], references: [id])
+  items     InvoiceItem[]
+
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  amount      Int
+  quantity    Int
+  unitPrice   Int
+  description String
+
+  invoiceId Int     @map("invoice_id")
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+
+  @@map("invoice_items")
 }

@@ -83,3 +83,44 @@ export async function getPatientAllergies(patientId: string, searchParams: Searc
     pageCount,
   };
 }
+
+export async function getPatientInvoices(patientId: string, searchParams: SearchParams) {
+  const page = Number(searchParams.page) || 1;
+  const size = Number(searchParams.size) || 10;
+  const sort = (searchParams.sort as string) || undefined;
+  const sortDirection = searchParams.sortDirection || undefined;
+
+  let orderBy: SearchParams = {
+    createdAt: "desc",
+  };
+  if (sort && sortDirection) {
+    // sort
+    orderBy = {
+      [sort]: sortDirection === "asc" ? "asc" : "desc",
+    };
+  }
+
+  const data = await prisma.invoice.findMany({
+    where: {
+      patientId: Number(patientId),
+    },
+    orderBy: {
+      ...orderBy,
+    },
+    skip: (page - 1) * size,
+    take: size,
+  });
+
+  const count = await prisma.invoice.count({
+    where: {
+      patientId: Number(patientId),
+    },
+  });
+
+  const pageCount = Math.ceil(count / size);
+
+  return {
+    data,
+    pageCount,
+  };
+}
